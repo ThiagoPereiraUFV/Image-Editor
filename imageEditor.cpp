@@ -10,22 +10,21 @@
 using namespace std;
 
 int main() {
-    bool read1, read2;
+    bool read;
     int maxPixels;
     string type;
     vector<vector<int> > imageP2;
-    vector<vector<RGB> > imageP3;
-    vector<vector<RGB> > f1, f2;
+    vector<vector<RGB> > imageP3, f1, f2;
 
-    read1 = readFile(imageP2, f1, maxPixels, type);
-    read2 = readFile(imageP2, f2, maxPixels, type);
+    read = readFile(imageP2, imageP3, maxPixels, type);
+    f1.resize(imageP3.size(), vector<RGB> (imageP3[0].size()));
+    f2 = f1;
 
-    filters(f1, type, chooseFilter(2));
-    filters(f2, type, chooseFilter(2));
+    maskP3(f1, imageP3, type, chooseFilter(0));
+    maskP3(f2, imageP3, type, chooseFilter(1));
 
     imageP3 = unify(f1, f2);
-
-    print(imageP2, imageP3, maxPixels, type, read1);
+    print(imageP2, imageP3, maxPixels, type, read);
 
     return 0;
 }
