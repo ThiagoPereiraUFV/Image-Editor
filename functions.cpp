@@ -4,6 +4,10 @@ int avg(const int x1, const int x2, const int option) {
             return sqrt(x1*x2);
             break;
         }
+        case 2: {
+            return sqrt(x1*x1 + x2*x2);
+            break;
+        }
         default: {
             return (x1 + x2)/2;
             break;
@@ -152,7 +156,7 @@ void negative(t &image, const string &type) {
 }
 
 template <class t>
-vector<vector<int> > blackAndWhite(const t &image, string &type, const int height, const int width) {
+vector<vector<int> > grayScale(const t &image, string &type, const int height, const int width) {
     vector<vector<int> > bw(height, vector<int> (width));
 
     if(type == "P3") {
@@ -164,6 +168,28 @@ vector<vector<int> > blackAndWhite(const t &image, string &type, const int heigh
 
     type = "P2";
     return bw;
+}
+
+template <class t>
+void blackAndWhite(t &image, string &type) {
+    if(type == "P2") {
+        for(int i = 0; i < image.size(); i++)
+            for(int j = 0; j < image[i].size(); j++){
+                if(image[i][j] > 127)
+                    image[i][j] = 255;
+                else
+                    image[i][j] = 0;
+            }
+    }
+    else    if(type == "P3") {
+                for(int i = 0; i < image.size(); i++)
+                    for(int j = 0; j < image[i].size(); j++){
+                        if(image[i][j] > 127)
+                            image[i][j] = 255;
+                        else
+                            image[i][j] = 0;
+                    }
+    }
 }
 
 template <class t>
@@ -182,7 +208,7 @@ void mirror(t &image, const string &type) {
 
 template <class t>
 void rotate(vector<vector<t> > &image, const string &type) {
-    vector<vector<t> > rotated(image[0].size(), vector<t> (image.size(), RGB(0, 0, 0)));
+    vector<vector<t> > rotated(image[0].size(), vector<t> (image.size()));
 
     if(type == "P2") {
         for(int i = 0, k = image.size()-1; i < image.size(); i++, k--)
@@ -219,7 +245,43 @@ vector<vector<int> > chooseFilter(const int option) {
     }
 }
 
-void filters(vector<vector<RGB> > &image, const string &type, const vector<vector<int> > &filter) {
+void maskP2(vector<vector<int> > &newP2, const vector<vector<int> > &image, const string &type, const vector<vector<int> > &filter) {
+    if(type == "P2") {
+        for(int i = 0; i < image.size(); i++)
+            for(int j = 0; j < image[i].size(); j++) {
+                vector<int> f;
+                f.push_back(image[i][j]*filter[1][1]);
+                
+                if(i-1 >= 0 && j-1 >= 0)
+                    f.push_back(image[i-1][j-1]*filter[0][0]);
+                if(i+1 < image.size() && j+1 < image[i].size())
+                    f.push_back(image[i+1][j+1]*filter[2][2]);
+                if(i-1 >= 0 && j+1 < image[i].size())
+                    f.push_back(image[i-1][j+1]*filter[0][2]);
+                if(i+1 < image.size() && j-1 >= 0)
+                    f.push_back(image[i+1][j-1]*filter[2][0]);
+                if(i-1 >= 0)
+                    f.push_back(image[i-1][j]*filter[0][1]);
+                if(j-1 >= 0)
+                    f.push_back(image[i][j-1]*filter[1][0]);
+                if(i+1 < image.size())
+                    f.push_back(image[i+1][j]*filter[2][1]);
+                if(j+1 < image[i].size())
+                    f.push_back(image[i][j+1]*filter[1][2]);
+
+                int sum = accumulate(f.begin(), f.end(), 0);
+
+                if(sum > 255)
+                    sum = 255;
+                else    if(sum < 0)
+                            sum = 0;
+
+                newP2[i][j] = sum;
+            }
+    }
+}
+
+void maskP3(vector<vector<RGB> > &newP3, const vector<vector<RGB> > &image, const string &type, const vector<vector<int> > &filter) {
     if(type == "P3") {
         for(int i = 0; i < image.size(); i++)
             for(int j = 0; j < image[i].size(); j++) {
@@ -270,19 +332,30 @@ void filters(vector<vector<RGB> > &image, const string &type, const vector<vecto
                 else    if(sumB < 0)
                             sumB = 0;
 
-                image[i][j] = RGB(sumR, sumG, sumB);
+                newP3[i][j] = RGB(sumR, sumG, sumB);
             }
     }
 }
 
 vector<vector<RGB> > unify(const vector<vector<RGB> > &f1, const vector<vector<RGB> > &f2) {
-    vector<vector<RGB> > final(f1.size(), vector<RGB> (f1[0].size(), RGB(0, 0, 0)));
+    vector<vector<RGB> > final(f1.size(), vector<RGB> (f1[0].size()));
 
     for(int i = 0; i < f1.size(); i++)
         for(int j = 0; j < f1[i].size(); j++){
-            final[i][j].R = avg(f1[i][j].R, f2[i][j].R, 1);
-            final[i][j].G = avg(f1[i][j].G, f2[i][j].G, 1);
-            final[i][j].B = avg(f1[i][j].B, f2[i][j].B, 1);
+            final[i][j].R = avg(f1[i][j].R, f2[i][j].R, 3);
+            final[i][j].G = avg(f1[i][j].G, f2[i][j].G, 3);
+            final[i][j].B = avg(f1[i][j].B, f2[i][j].B, 3);
+        }
+
+    return final;
+}
+
+vector<vector<int> > unify(const vector<vector<int> > &f1, const vector<vector<int> > &f2) {
+    vector<vector<int> > final(f1.size(), vector<int> (f1[0].size()));
+
+    for(int i = 0; i < f1.size(); i++)
+        for(int j = 0; j < f1[i].size(); j++){
+            final[i][j] = avg(f1[i][j], f2[i][j], 3);
         }
 
     return final;
