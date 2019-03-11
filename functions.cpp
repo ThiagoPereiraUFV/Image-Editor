@@ -17,25 +17,13 @@ int avg(const int x1, const int x2, const int option) {
 
 template <class t>
 void readImage(t &image, fstream &inputImage, const string &type) {
-    if(type == "P2") {
-        int pixel;
-
-        for(int i = 0; i < image.size(); i++)
-            for(int j = 0; j < image[i].size(); j++){
-                inputImage >> pixel;
-                image[i][j] = pixel;
-            }
-    }
-    else    if(type == "P3") {
-                for(int i = 0; i < image.size(); i++)
-                    for(int j = 0; j < image[i].size(); j++){
-                        inputImage >> image[i][j];
-                    }
-            }
+    for(int i = 0; i < image.size(); i++)
+        for(int j = 0; j < image[i].size(); j++)
+            inputImage >> image[i][j];
 }
 
 bool readFile(vector<vector<int> > &imageP2, vector<vector<RGB> > &imageP3, int &maxPixels, string &type) {
-    fstream inputImage("Samples/s.pnm", fstream::in);
+    fstream inputImage("Samples/brain.pnm", fstream::in);
     int height, width;
 
     if(inputImage.is_open()) {
@@ -81,21 +69,15 @@ template <class t>
 void printImage(const t &image, const int maxPixels, const string &type) {
     if(type == "P2") {
         cout << "P2\n" << image[0].size() << ' ' << image.size() << '\n' << maxPixels << '\n';
-        for(int i = 0; i < image.size(); i++){
-            for(int j = 0; j < image[i].size(); j++)
-                cout << image[i][j] << " ";
-            cout << '\n';
-        }
-    }
-    else    if(type == "P3") {
+    }   
+    else    if(type == "P3")
                 cout << "P3\n" << image[0].size() << ' ' << image.size() << '\n' << maxPixels << '\n';
-                for(int i = 0; i < image.size(); i++){
-                    for(int j = 0; j < image[i].size(); j++){
-                        cout << image[i][j];
-                    }
-                    cout << '\n';
-                }
-            }
+    
+    for(int i = 0; i < image.size(); i++){
+        for(int j = 0; j < image[i].size(); j++)
+            cout << image[i][j] << " ";
+        cout << '\n';
+    }
 }
 
 void print(vector<vector<int> > &imageP2, vector<vector<RGB> > &imageP3, const int &maxPixels, const string &type, const bool read) {
@@ -103,6 +85,8 @@ void print(vector<vector<int> > &imageP2, vector<vector<RGB> > &imageP3, const i
             printImage(imageP2, maxPixels, type);
     else    if(read && type == "P3")
                 printImage(imageP3, maxPixels, type);
+            else
+                cout << "Image couldn't be printed" << endl;
 }
 
 template <class t>
@@ -143,16 +127,9 @@ void darken(t &image, const string &type, const int factor) {
 
 template <class t>
 void negative(t &image, const string &type) {
-    if(type == "P2") {
-        for(int i = 0; i < image.size(); i++)
-            for(int j = 0; j < image[i].size(); j++)
-                image[i][j] = 255-image[i][j];
-    }
-    else    if(type == "P3") {
-                for(int i = 0; i < image.size(); i++)
-                    for(int j = 0; j < image[i].size(); j++)
-                        image[i][j] = 255-image[i][j];
-            }
+    for(int i = 0; i < image.size(); i++)
+        for(int j = 0; j < image[i].size(); j++)
+            image[i][j] = 255-image[i][j];
 }
 
 template <class t>
@@ -172,54 +149,29 @@ vector<vector<int> > grayScale(const t &image, string &type, const int height, c
 
 template <class t>
 void blackAndWhite(t &image, string &type) {
-    if(type == "P2") {
-        for(int i = 0; i < image.size(); i++)
-            for(int j = 0; j < image[i].size(); j++){
-                if(image[i][j] > 127)
-                    image[i][j] = 255;
-                else
-                    image[i][j] = 0;
-            }
-    }
-    else    if(type == "P3") {
-                for(int i = 0; i < image.size(); i++)
-                    for(int j = 0; j < image[i].size(); j++){
-                        if(image[i][j] > 127)
-                            image[i][j] = 255;
-                        else
-                            image[i][j] = 0;
-                    }
-    }
+    for(int i = 0; i < image.size(); i++)
+        for(int j = 0; j < image[i].size(); j++){
+            if(image[i][j] > 127)
+                image[i][j] = 255;
+            else
+                image[i][j] = 0;
+        }
 }
 
 template <class t>
 void mirror(t &image, const string &type) {
-    if(type == "P2") {
-        for(int i = 0; i < image.size(); i++)
-            for(int j = 0, k = image[i].size()-1; j < k; j++, k--)
-                swap(image[i][j], image[i][k]);
-    }
-    else    if(type == "P3") {
-                for(int i = 0; i < image.size(); i++)
-                    for(int j = 0, k = image[i].size()-1; j < k; j++, k--)
-                        swap(image[i][j], image[i][k]);
-            }
+    for(int i = 0; i < image.size(); i++)
+        for(int j = 0, k = image[i].size()-1; j < k; j++, k--)
+            swap(image[i][j], image[i][k]);
 }
 
 template <class t>
 void rotate(vector<vector<t> > &image, const string &type) {
     vector<vector<t> > rotated(image[0].size(), vector<t> (image.size()));
 
-    if(type == "P2") {
-        for(int i = 0, k = image.size()-1; i < image.size(); i++, k--)
-                for(int j = 0; j < image[i].size(); j++)
-                    rotated[j][k] = image[i][j];
-    }
-    else    if(type == "P3") {
-                for(int i = 0, k = image.size()-1; i < image.size(); i++, k--)
-                        for(int j = 0; j < image[i].size(); j++)
-                            rotated[j][k] = image[i][j];
-            }
+    for(int i = 0, k = image.size()-1; i < image.size(); i++, k--)
+        for(int j = 0; j < image[i].size(); j++)
+            rotated[j][k] = image[i][j];
 
     image = rotated;
 }
