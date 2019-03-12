@@ -75,7 +75,7 @@ class RGB{
             return ((this->R < obj) || (this->G < obj) || (this->B < obj));
         }
         friend ostream &operator<<(ostream &stream, const RGB &obj) {
-            stream << obj.R << " " << obj.G << " " << obj.B << " ";
+            stream << obj.R << " " << obj.G << " " << obj.B;
 
             return stream;
         }
