@@ -16,21 +16,21 @@ int avg(const int x1, const int x2, const int option) {
 }
 
 template <class t>
-void readImage(t &image, fstream &inputImage, const string &type) {
+void readImage(t &image, fstream &inputImage) {
     for(int i = 0; i < image.size(); i++)
         for(int j = 0; j < image[i].size(); j++)
             inputImage >> image[i][j];
 }
 
 bool readFile(vector<vector<int> > &imageP2, vector<vector<RGB> > &imageP3, int &maxPixels, string &type) {
-    fstream inputImage("Samples/brain.pnm", fstream::in);
+    fstream inputImage("Samples/s.pnm", fstream::in);
     int height, width;
 
     if(inputImage.is_open()) {
         inputImage >> type;
 
         if(type != "P2" && type != "P3") {
-            cout << "This file isn't supported yet!\n";
+            cerr << "This file isn't supported yet!\n";
             return false;
         }
 
@@ -49,17 +49,17 @@ bool readFile(vector<vector<int> > &imageP2, vector<vector<RGB> > &imageP3, int 
         inputImage >> height >> maxPixels;
     }
     else {
-        cout << "The picture couldn't be read!\n";
+        cerr << "The picture couldn't be read!\n";
         return false;
     }
 
     if(type == "P2") {
         imageP2.resize(height, vector<int>(width));
-        readImage(imageP2, inputImage, type);
+        readImage(imageP2, inputImage);
     }
     else    if(type == "P3") {
                 imageP3.resize(height, vector<RGB>(width, RGB(0, 0, 0)));
-                readImage(imageP3, inputImage, type);
+                readImage(imageP3, inputImage);
             }
 
     return true;
@@ -80,13 +80,13 @@ void printImage(const t &image, const int maxPixels, const string &type) {
     }
 }
 
-void print(vector<vector<int> > &imageP2, vector<vector<RGB> > &imageP3, const int &maxPixels, const string &type, const bool read) {
+void print(const vector<vector<int> > &imageP2, const vector<vector<RGB> > &imageP3, const int &maxPixels, const string &type, const bool read) {
     if(read && type == "P2")
             printImage(imageP2, maxPixels, type);
     else    if(read && type == "P3")
                 printImage(imageP3, maxPixels, type);
             else
-                cout << "Image couldn't be printed" << endl;
+                cerr << "Image couldn't be printed" << endl;
 }
 
 template <class t>
@@ -126,29 +126,29 @@ void darken(t &image, const string &type, const int factor) {
 }
 
 template <class t>
-void negative(t &image, const string &type) {
+void negative(t &image) {
     for(int i = 0; i < image.size(); i++)
         for(int j = 0; j < image[i].size(); j++)
             image[i][j] = 255-image[i][j];
 }
 
 template <class t>
-vector<vector<int> > grayScale(const t &image, string &type, const int height, const int width) {
-    vector<vector<int> > bw(height, vector<int> (width));
+vector<vector<int> > grayScale(const t &image, string &type) {
+    vector<vector<int> > gs(image.size(), vector<int> (image[0].size()));
 
     if(type == "P3") {
         for(int i = 0; i < image.size(); i++)
             for(int j = 0; j < image[i].size(); j++){
-                bw[i][j] = (image[i][j].R + image[i][j].G + image[i][j].B)/3;
+                gs[i][j] = (image[i][j].R + image[i][j].G + image[i][j].B)/3;
             }
     }
 
     type = "P2";
-    return bw;
+    return gs;
 }
 
 template <class t>
-void blackAndWhite(t &image, string &type) {
+void blackAndWhite(t &image) {
     for(int i = 0; i < image.size(); i++)
         for(int j = 0; j < image[i].size(); j++){
             if(image[i][j] > 127)
@@ -159,14 +159,14 @@ void blackAndWhite(t &image, string &type) {
 }
 
 template <class t>
-void mirror(t &image, const string &type) {
+void mirror(t &image) {
     for(int i = 0; i < image.size(); i++)
         for(int j = 0, k = image[i].size()-1; j < k; j++, k--)
             swap(image[i][j], image[i][k]);
 }
 
 template <class t>
-void rotate(vector<vector<t> > &image, const string &type) {
+void rotate(vector<vector<t> > &image) {
     vector<vector<t> > rotated(image[0].size(), vector<t> (image.size()));
 
     for(int i = 0, k = image.size()-1; i < image.size(); i++, k--)
