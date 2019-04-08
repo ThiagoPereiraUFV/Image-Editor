@@ -178,19 +178,23 @@ void rotate(vector<vector<t> > &image) {
 
 vector<vector<int> > chooseFilter(const int option) {
     switch(option) {
-        case 0: {
+        case 0: {   //Gy mask
             return vector<vector<int> > ({{1, 2, 1}, {0, 0, 0}, {-1, -2, -1}});
             break;
         }
-        case 1: {
+        case 1: {   //Gx mask/Sobel operator
             return vector<vector<int> > ({{1, 0, -1}, {2, 0, -2}, {1, 0, -1}});
             break;
         }
-        case 2: {
+        case 2: {   //Highlight operator
+            return vector<vector<int> > ({{0, -1, 0}, {-1, 5, -1}, {0, -1, 0}});
+            break;
+        }
+        case 3: {   //LaPlace operator
             return vector<vector<int> > ({{0, -1, 0}, {-1, 4, -1}, {0, -1, 0}});
             break;
         }
-        default: {
+        default: {  //Standard
             return vector<vector<int> > ({{1, 1, 1}, {1, 1, 1}, {1, 1, 1}});
             break;
         }
@@ -265,10 +269,6 @@ void maskP3(vector<vector<RGB> > &newP3, const vector<vector<RGB> > &image, cons
                     sumB += f[k].B;
                 }
 
-                sumR /= f.size();
-                sumG /= f.size();
-                sumB /= f.size();
-
                 if(sumR > 255)
                     sumR = 255;
                 else    if(sumR < 0)
@@ -289,25 +289,25 @@ void maskP3(vector<vector<RGB> > &newP3, const vector<vector<RGB> > &image, cons
     }
 }
 
-vector<vector<RGB> > unify(const vector<vector<RGB> > &f1, const vector<vector<RGB> > &f2) {
+vector<vector<RGB> > unify(const vector<vector<RGB> > &f1, const vector<vector<RGB> > &f2, const int nAvg) {
     vector<vector<RGB> > final(f1.size(), vector<RGB> (f1[0].size()));
 
     for(int i = 0; i < f1.size(); i++)
         for(int j = 0; j < f1[i].size(); j++){
-            final[i][j].R = avg(f1[i][j].R, f2[i][j].R, 3);
-            final[i][j].G = avg(f1[i][j].G, f2[i][j].G, 3);
-            final[i][j].B = avg(f1[i][j].B, f2[i][j].B, 3);
+            final[i][j].R = avg(f1[i][j].R, f2[i][j].R, nAvg);
+            final[i][j].G = avg(f1[i][j].G, f2[i][j].G, nAvg);
+            final[i][j].B = avg(f1[i][j].B, f2[i][j].B, nAvg);
         }
 
     return final;
 }
 
-vector<vector<int> > unify(const vector<vector<int> > &f1, const vector<vector<int> > &f2) {
+vector<vector<int> > unify(const vector<vector<int> > &f1, const vector<vector<int> > &f2, const int nAvg) {
     vector<vector<int> > final(f1.size(), vector<int> (f1[0].size()));
 
     for(int i = 0; i < f1.size(); i++)
         for(int j = 0; j < f1[i].size(); j++){
-            final[i][j] = avg(f1[i][j], f2[i][j], 3);
+            final[i][j] = avg(f1[i][j], f2[i][j], nAvg);
         }
 
     return final;
