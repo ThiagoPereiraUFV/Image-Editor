@@ -22,8 +22,8 @@ void readImage(t &image, fstream &inputImage) {
             inputImage >> image[i][j];
 }
 
-bool readFile(vector<vector<int> > &imageP2, vector<vector<RGB> > &imageP3, int &maxPixels, string &type) {
-    fstream inputImage("Samples/s.pnm", fstream::in);
+bool readFile(vector<vector<int> > &imageP2, vector<vector<RGB> > &imageP3, int &maxPixels, string &type, const string path) {
+    fstream inputImage(path, fstream::in);
     int height, width;
 
     if(inputImage.is_open()) {
@@ -61,30 +61,35 @@ bool readFile(vector<vector<int> > &imageP2, vector<vector<RGB> > &imageP3, int 
                 imageP3.resize(height, vector<RGB>(width, RGB(0, 0, 0)));
                 readImage(imageP3, inputImage);
             }
+    inputImage.close();
 
     return true;
 }
 
 template <class t>
-void printImage(const t &image, const int maxPixels, const string &type) {
+void printImage(const t &image, const int maxPixels, const string &type, const string path) {
+    fstream outputImage(path, fstream::out);
+
     if(type == "P2") {
-        cout << "P2\n" << image[0].size() << ' ' << image.size() << '\n' << maxPixels << '\n';
+        outputImage << "P2\n" << image[0].size() << ' ' << image.size() << '\n' << maxPixels << '\n';
     }   
     else    if(type == "P3")
-                cout << "P3\n" << image[0].size() << ' ' << image.size() << '\n' << maxPixels << '\n';
+                outputImage << "P3\n" << image[0].size() << ' ' << image.size() << '\n' << maxPixels << '\n';
     
     for(int i = 0; i < image.size(); i++){
         for(int j = 0; j < image[i].size(); j++)
-            cout << image[i][j] << " ";
-        cout << '\n';
+            outputImage << image[i][j] << " ";
+        outputImage << '\n';
     }
+
+    outputImage.close();
 }
 
-void print(const vector<vector<int> > &imageP2, const vector<vector<RGB> > &imageP3, const int &maxPixels, const string &type, const bool read) {
+void print(const vector<vector<int> > &imageP2, const vector<vector<RGB> > &imageP3, const int &maxPixels, const string &type, const bool read, const string path) {
     if(read && type == "P2")
-            printImage(imageP2, maxPixels, type);
+            printImage(imageP2, maxPixels, type, path);
     else    if(read && type == "P3")
-                printImage(imageP3, maxPixels, type);
+                printImage(imageP3, maxPixels, type, path);
             else
                 cerr << "Image couldn't be printed" << endl;
 }
