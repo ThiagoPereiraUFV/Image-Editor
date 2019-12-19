@@ -2,6 +2,6 @@
 
 *Program in C++ to customize the visual of a picture*
 
-__Execute the following command to compile the code and run the game on your Linux Terminal:__
+__Execute the following command to compile the code and run the editor on your Linux Terminal:__
 
 >  make
