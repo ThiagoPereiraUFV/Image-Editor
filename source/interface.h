@@ -20,7 +20,7 @@ class   Menu{
             cin >> path;
 
             if(path == "...")
-                read = readFile(imageP2, imageP3, maxPixels, type, "Samples/s.pnm");
+                read = readFile(imageP2, imageP3, maxPixels, type, "samples/sample.pnm");
             else
                 read = readFile(imageP2, imageP3, maxPixels, type, path);
             system("clear");
@@ -210,7 +210,7 @@ class   Menu{
             cin >> outPath;
 
             if(outPath == "...")
-                print(imageP2, imageP3, maxPixels, type, read, "Samples/out.pnm");
+                print(imageP2, imageP3, maxPixels, type, read, "samples/out.pnm");
             else
                 print(imageP2, imageP3, maxPixels, type, read, outPath);
         }
