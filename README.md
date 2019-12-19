@@ -1,6 +1,7 @@
-# Image-Editor
-Program in C++ that can make little edits to a picture
+## Image Editor v1.0 by Thiago Marinho Pereira
 
-Compile it using the following command:
+*Program in C++ to customize the visual of a picture*
 
-g++ imageEditor.cpp --std=c++11 -O3
+__Execute the following command to compile the code and run the game on your Linux Terminal:__
+
+>  make
