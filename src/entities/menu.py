@@ -1,29 +1,33 @@
 from entities.image import ImageP
+from entities.operations import Operations
 import os
 
 class Menu:
 	def __init__(self) :
 		try :
-			# self.image = ImageP(self.inputImagePath("Enter image file path: "))
-			# self.dirName = self.inputDirName("Enter path where processed images will be stored: ")
+			self.samplesFolder = "samples"
+			self.image = ImageP(self.inputImageName("Enter image file name in " + self.samplesFolder + " folder: "))
+			self.dirName = self.inputDirName("Enter path where processed images will be stored: ")
 			os.system("clear")
 
 			self.options()
-		except Exception :
-			print("An error occurred, try again!")
+		except Exception as err :
+			print(str(err))
+		finally :
+			exit(0)
 
-	def inputImagePath(self, message) :
-		imagePath = str(input(message))
+	def inputImageName(self, message) :
+		imageName = str(input(message))
 
-		isFile = os.path.isfile(imagePath)
+		isFile = os.path.isfile(self.samplesFolder + "/" + imageName)
 
 		while(not isFile) :
 			print("Invalid path, try again!\n")
 
-			imagePath = str(input(message))
-			isFile = os.path.isfile(imagePath)
+			imageName = str(input(message))
+			isFile = os.path.isfile(self.samplesFolder + "/" + imageName)
 
-		return imagePath
+		return imageName
 
 	def inputDirName(self, message) :
 		outPath = str(input(message))
@@ -40,7 +44,23 @@ class Menu:
 		if(op == 1) :
 			op = self.oneImgOps()
 			if(op == 1) :
-				print("Constant operations")
+				imagePath = self.samplesFolder + "/" + self.image.getImageFullName()
+				imageSavePath = self.dirName + "/const-result." + self.image.getImageExtension()
+				op = self.constImgOps()
+				if(op == 1) :
+					result = Operations(imagePath).constSum(-50)
+					result.save(imageSavePath)
+					result.show()
+				if(op == 2) :
+					print("Subtraction")
+				if(op == 3) :
+					print("Multiplication")
+				if(op == 4) :
+					print("Division")
+				if(op == 5) :
+					print("Negative")
+				if(op == 6) :
+					print("Shades of gray")
 			if(op == 2) :
 				print("Rotation")
 			if(op == 3) :
@@ -98,6 +118,23 @@ class Menu:
 		op = int(input("Type the corresponding operation number: "))
 
 		while(op < 1 or op > 5) :
+			op = int(input("Invalid operation, type again: "))
+
+		os.system("clear")
+
+		return op
+
+	def constImgOps(self) :
+		print("Constant image operations:")
+		print("1 - Sum")
+		print("2 - Subtraction")
+		print("3 - Multiplication")
+		print("4 - Division")
+		print("5 - Negative")
+		print("6 - Shades of gray")
+		op = int(input("Type the corresponding operation number: "))
+
+		while(op < 1 or op > 6) :
 			op = int(input("Invalid operation, type again: "))
 
 		os.system("clear")
