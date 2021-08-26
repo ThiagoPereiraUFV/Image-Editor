@@ -6,8 +6,8 @@ class Menu:
 	def __init__(self) :
 		try :
 			self.samplesFolder = "samples"
+			self.dirName = "result"
 			self.image = ImageP(self.inputImageName("Enter image file name in " + self.samplesFolder + " folder: "))
-			self.dirName = self.inputDirName("Enter path where processed images will be stored: ")
 			os.system("clear")
 
 			self.options()
@@ -39,43 +39,71 @@ class Menu:
 
 		return outPath
 
+	def getResultImagePath(self, name) :
+		return self.dirName + "/" + self.image.getImageName() + "-" + name + "." + self.image.getImageExtension()
+
 	def options(self) :
+		imagePath = self.samplesFolder + "/" + self.image.getImageFullName()
 		op = self.imageOps()
 		if(op == 1) :
 			op = self.oneImgOps()
 			if(op == 1) :
-				imagePath = self.samplesFolder + "/" + self.image.getImageFullName()
-				imageSavePath = self.dirName + "/const-result." + self.image.getImageExtension()
 				op = self.constImgOps()
 				if(op == 1) :
-					result = Operations(imagePath).constSum(-50)
+					factor = int(input('Type a brighness factor between -255 and 255: '))
+					while(factor < -255 or factor > 255) :
+						factor = int(input('Invalid value, try again: '))
+
+					result = Operations(imagePath).constSum(factor)
+					imageSavePath = self.getResultImagePath("const-brightness")
 					result.save(imageSavePath)
 					result.show()
-				if(op == 2) :
-					print("Subtraction")
-				if(op == 3) :
-					print("Multiplication")
-				if(op == 4) :
-					print("Division")
-				if(op == 5) :
-					print("Negative")
-				if(op == 6) :
-					print("Shades of gray")
-			if(op == 2) :
-				print("Rotation")
-			if(op == 3) :
+				elif(op == 2) :
+					factor = float(input('Type a brighness factor between 0 and 100: '))
+					while(factor < 0 or factor > 100) :
+						factor = float(input('Invalid value, try again: '))
+
+					result = Operations(imagePath).constMult(factor)
+					imageSavePath = self.getResultImagePath("const-contrast")
+					result.save(imageSavePath)
+					result.show()
+				elif(op == 3) :
+					result = Operations(imagePath).constNegative()
+					imageSavePath = self.getResultImagePath("const-negative")
+					result.save(imageSavePath)
+					result.show()
+				elif(op == 4) :
+					result = Operations(imagePath).constMono()
+					imageSavePath = self.getResultImagePath("const-mono")
+					result.save(imageSavePath)
+					result.show()
+			elif(op == 2) :
+				result = Operations(imagePath).constRot()
+				imageSavePath = self.getResultImagePath("const-rotate")
+				result.save(imageSavePath)
+				result.show()
+			elif(op == 3) :
 				print("Mirroring")
 		elif(op == 2):
+			imageAux = ImageP(self.inputImageName("Enter second image file name in " + self.samplesFolder + " folder: "))
+			imageAuxPath = self.samplesFolder + "/" + imageAux.getImageFullName()
 			op = self.twoImgOps()
 			if(op == 1) :
-				print("Sum")
-			if(op == 2) :
+				w = int(input('Type a transparency value to image 1 over image 2 between 0 and 100: '))
+				while(w < 0 or w > 100) :
+					w = int(input('Invalid value, try again: '))
+
+				result = Operations(imagePath, imageAuxPath).imagesSum(w)
+				imageSavePath = self.getResultImagePath("images-sum")
+				result.save(imageSavePath)
+				result.show()
+			elif(op == 2) :
 				print("Subtraction")
-			if(op == 3) :
+			elif(op == 3) :
 				print("Multiplication")
-			if(op == 4) :
+			elif(op == 4) :
 				print("Division")
-			if(op == 5) :
+			elif(op == 5) :
 				print("3D Anaglyph")
 		elif(op == 0) :
 			exit(0)
@@ -126,15 +154,13 @@ class Menu:
 
 	def constImgOps(self) :
 		print("Constant image operations:")
-		print("1 - Sum")
-		print("2 - Subtraction")
-		print("3 - Multiplication")
-		print("4 - Division")
-		print("5 - Negative")
-		print("6 - Shades of gray")
+		print("1 - Brigthness")
+		print("2 - Contrast")
+		print("3 - Negative")
+		print("4 - Shades of gray")
 		op = int(input("Type the corresponding operation number: "))
 
-		while(op < 1 or op > 6) :
+		while(op < 1 or op > 4) :
 			op = int(input("Invalid operation, type again: "))
 
 		os.system("clear")
