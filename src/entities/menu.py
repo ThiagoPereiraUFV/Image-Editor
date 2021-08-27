@@ -89,8 +89,8 @@ class Menu:
 			imageAuxPath = self.samplesFolder + "/" + imageAux.getImageFullName()
 			op = self.twoImgOps()
 			if(op == 1) :
-				w = int(input('Type a transparency value to image 1 over image 2 between 0 and 100: '))
-				while(w < 0 or w > 100) :
+				w = int(input('Type a transparency value to image 1 over image 2 between 0 and 100 (Type -1 to not apply transparency): '))
+				while(w < -1 or w > 100) :
 					w = int(input('Invalid value, try again: '))
 
 				result = Operations(imagePath, imageAuxPath).imagesSum(w)
@@ -98,13 +98,29 @@ class Menu:
 				result.save(imageSavePath)
 				result.show()
 			elif(op == 2) :
-				print("Subtraction")
+				w = int(input('Type a transparency value to image 1 over image 2 between 0 and 100 (Type -1 to not apply transparency): '))
+				while(w < -1 or w > 100) :
+					w = int(input('Invalid value, try again: '))
+
+				result = Operations(imagePath, imageAuxPath).imagesSub(w)
+				imageSavePath = self.getResultImagePath("images-sub")
+				result.save(imageSavePath)
+				result.show()
 			elif(op == 3) :
-				print("Multiplication")
+				result = Operations(imagePath, imageAuxPath).imagesMult()
+				imageSavePath = self.getResultImagePath("images-mult")
+				result.save(imageSavePath)
+				result.show()
 			elif(op == 4) :
-				print("Division")
+				result = Operations(imagePath, imageAuxPath).imagesDiv()
+				imageSavePath = self.getResultImagePath("images-div")
+				result.save(imageSavePath)
+				result.show()
 			elif(op == 5) :
-				print("3D Anaglyph")
+				result = Operations(imagePath).images3D()
+				imageSavePath = self.getResultImagePath("images-3d")
+				result.save(imageSavePath)
+				result.show()
 		elif(op == 0) :
 			exit(0)
 

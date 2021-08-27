@@ -56,12 +56,71 @@ class Operations :
 
 		return Image.fromarray(np.uint8(np.rot90(f, rotation)))
 
-	def imagesSum(self, w = 1) :
+	def imagesSum(self, w = -1) :
 		w = w/100
 		f = np.asarray(self.img, dtype=float)
 		g = np.asarray(self.imgAux, dtype=float)
-		f = w*f + (1-w)*g
+
+		if(w < 0 or w > 100) :
+			f = f + g
+		else :
+			f = w*f + (1-w)*g
 
 		f[f > self.Lmax] = self.Lmax
 
 		return Image.fromarray(np.uint8(np.round(f)))
+
+	def imagesSub(self, w = -1) :
+		w = w/100
+		f = np.asarray(self.img, dtype=float)
+		g = np.asarray(self.imgAux, dtype=float)
+
+		if(w < 0 or w > 100) :
+			f = f - g
+		else :
+			f = w*f - (1-w)*g
+
+		f[f < 0] = 0
+
+		return Image.fromarray(np.uint8(np.round(f)))
+
+	def imagesMult(self) :
+		f = np.asarray(self.img, dtype=float)
+		g = np.asarray(self.imgAux, dtype=float)/self.Lmax
+
+		f = f * g
+
+		f[f > self.Lmax] = self.Lmax
+
+		return Image.fromarray(np.uint8(np.round(f)))
+
+	def imagesDiv(self) :
+		f = np.asarray(self.img, dtype=float)
+		g = np.asarray(self.imgAux, dtype=float)/self.Lmax
+
+		f = f / g
+
+		f[np.isnan(f)] = self.Lmax
+		f[f > self.Lmax] = self.Lmax
+
+		return Image.fromarray(np.uint8(np.round(f)))
+
+	def images3D(self) :
+		f = np.asarray(self.img, dtype=int)
+		g = np.asarray(self.img, dtype=int)
+		h = np.asarray(self.img, dtype=int)
+
+		f[:,:,1] = 0
+		f[:,:,2] = 0
+		g[:,:,0] = 0
+
+		disp = f.shape[1]*0.002
+
+		f = np.roll(f, int(disp), axis=1)
+		g = np.roll(g, -int(disp), axis=1)
+		# h = f + g + 0.5*h
+		h = f + g
+
+		h[h > self.Lmax] = self.Lmax
+
+		return Image.fromarray(np.uint8(h))
