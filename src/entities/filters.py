@@ -20,13 +20,41 @@ class Filters :
 
 		return image
 
-	def getKernel(kernel):
+	def getKernelGauss(self, kSize, sigma):
+		if kSize % 2 == 0:
+      raise Exception('\n\n\nKernel size must be odd\n\n\n')
+
+    x = np.arange(-(kSize-1)/2, (kSize-1)/2+1)
+    y = np.arange(-(kSize-1)/2, (kSize-1)/2+1)
+
+    h1, h2 = np.meshgrid(x,y)
+
+    hg = np.exp(-(h1**2 + h2**2) / (2*sigma**2))
+
+    return hg / np.sum(hg)
+
+	def getKernel(self, kernel, kSize=9, sigma=1):
 		kernels = {
 			'gauss': [[1/16, 1/8, 1/16], [1/8, 1/4, 1/8], [1/16, 1/8, 1/16]],
-			'laplace': [[0, 1, 0], [1, -4, 1], [0, 1, 0]],
-			'sobel': [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]],
-			'prewitt': [[], [], []],
-			'robinson': [[], [], []],
+			'gaussCustom': self.getKernelGauss(kSize, sigma),
+			'laplaceSmooth1': [[-1,-1,-1], [-1,9,-1], [-1,-1,-1]],
+			'laplaceSmooth2': [[0, 1, 0], [1, -4, 1], [0, 1, 0]],
+			'laplaceEdge1': [[-1,-1,-1], [-1,8,-1], [-1,-1,-1]],
+			'laplaceEdge2': [[0,-1,0], [-1,4,-1], [0,-1,0]],
+			'emboss1': [[-1, -1, 0], [-1, 1, 1], [0, 1, 1]],
+			'emboss2': [[1, 1, 0], [1, 1, -1], [0, -1, -1]],
+			'embossEdge': [[-1, -1, 0], [-1, 0, 1], [0, 1, 1]],
+			'relief1': [[-2, -1, 0], [-1, 1, 1], [0, 1, 2]],
+			'relief2': [[2, 1, 0], [1, 1, -1], [0, -1, -2]],
+			'reliefEdge': [[-2, -1, 0], [-1, 0, 1], [0, 1, 2]],
+			'sobel1': [[-1, -2, -1], [0, 0, 0], [1, 2, 1]],
+			'sobel2': [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]],
+			'prewitt1': [[1, 0, -1], [1, 0, -1], [1, 0, -1]],
+			'prewitt2': [[1, 1, 1], [0, 0, 0], [-1, -1, -1]],
+			'roberts1': [[1,0], [0,-1]],
+			'roberts2': [[0,1], [-1,0]],
+			'scharr1': [[3, 10, 3], [0, 0, 0], [-3, -10, -3]],
+			'scharr2': [[3, 0, -3], [10, 0, -10], [3, 0, -3]]
 		}
 
 		return kernels[kernel]
