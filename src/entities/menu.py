@@ -79,7 +79,7 @@ class Menu:
 					result.show()
 			elif(op == 2) :
 				result = Operations(imagePath).constRot()
-				imageSavePath = self.getResultImagePath("const-rotate")
+				imageSavePath = self.getResultImagePath("rotate")
 				result.save(imageSavePath)
 				result.show()
 			elif(op == 3) :
@@ -88,7 +88,7 @@ class Menu:
 					axis = int(input('Invalid value, try again: '))
 
 				result = Operations(imagePath).constMirror(axis)
-				imageSavePath = self.getResultImagePath("const-mirror")
+				imageSavePath = self.getResultImagePath("mirror")
 				result.save(imageSavePath)
 				result.show()
 		elif(op == 2):
