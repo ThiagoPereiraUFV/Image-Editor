@@ -83,7 +83,14 @@ class Menu:
 				result.save(imageSavePath)
 				result.show()
 			elif(op == 3) :
-				print("Mirroring")
+				axis = int(input('Type 0 to mirror around horizontal axis, 1 to mirror around vertical axis or 2 to mirror around color axis: '))
+				while(axis != 0 and axis != 1 and axis != 2) :
+					axis = int(input('Invalid value, try again: '))
+
+				result = Operations(imagePath).constMirror(axis)
+				imageSavePath = self.getResultImagePath("const-mirror")
+				result.save(imageSavePath)
+				result.show()
 		elif(op == 2):
 			imageAux = ImageP(self.inputImageName("Enter second image file name in " + self.samplesFolder + " folder: "))
 			imageAuxPath = self.samplesFolder + "/" + imageAux.getImageFullName()

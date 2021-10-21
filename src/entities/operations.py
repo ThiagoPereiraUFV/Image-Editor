@@ -56,6 +56,11 @@ class Operations :
 
 		return Image.fromarray(np.uint8(np.rot90(f, rotation)))
 
+	def constMirror(self, axis) :
+		f = np.asarray(self.img, dtype=int)
+
+		return Image.fromarray(np.uint8(np.flip(f, axis=axis)))
+
 	def imagesSum(self, w = -1) :
 		w = w/100
 		f = np.asarray(self.img, dtype=float)
