@@ -3,14 +3,15 @@ import numpy as np
 import os
 
 class Filters :
-	def __init__(self, img):
+	def __init__(self, img, kernel):
 		os.system("clear")
 		print("Processing image...")
 
 		self.Lmax = 255
 		self.img = self.openImage(img)
 		self.imgArr = np.asarray(self.img, dtype=float)
-		self.imgResultArr = np.zeros(img.shape, dtype=float)
+		self.imgResultArr = self.imgArr.copy()
+		self.kernel = self.getKernel(kernel)
 
 	def openImage(self, path) :
 		image = Image.open(path)
@@ -51,10 +52,20 @@ class Filters :
 			'sobel2': [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]],
 			'prewitt1': [[1, 0, -1], [1, 0, -1], [1, 0, -1]],
 			'prewitt2': [[1, 1, 1], [0, 0, 0], [-1, -1, -1]],
+			'scharr1': [[3, 10, 3], [0, 0, 0], [-3, -10, -3]],
+			'scharr2': [[3, 0, -3], [10, 0, -10], [3, 0, -3]],
 			'roberts1': [[1,0], [0,-1]],
 			'roberts2': [[0,1], [-1,0]],
-			'scharr1': [[3, 10, 3], [0, 0, 0], [-3, -10, -3]],
-			'scharr2': [[3, 0, -3], [10, 0, -10], [3, 0, -3]]
 		}
 
-		return kernels[kernel]
+		return np.asarray(kernels[kernel], dtype=float)
+
+	def linearConvolution(self):
+		for y in range(self.imgArr.shape[0]):
+			for x in range(self.imgArr.shape[1]):
+				for c in range(3):
+					if(y-1 >= 0 and y+2 < self.imgArr.shape[0] and x-1 >= 0 and x+2 < self.imgArr.shape[1]):
+						prod = self.imgArr[y-1:y+1+1, x-1:x+1+1, c]*self.kernel[:,:]
+						self.imgResultArr[y, x, c] = np.sum(prod)
+
+		return Image.fromarray(np.uint8(np.clip(np.round(self.imgResultArr), 0, 255)))

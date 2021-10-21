@@ -1,5 +1,6 @@
 from entities.image import ImageP
 from entities.operations import Operations
+from entities.filters import Filters
 import os
 
 class Menu:
@@ -93,6 +94,11 @@ class Menu:
 				result.show()
 			elif(op == 4) :
 				op = self.filterImgOps()
+				if(op == 1):
+					result = Filters(imagePath, "gauss").linearConvolution()
+					imageSavePath = self.getResultImagePath("gauss")
+					result.save(imageSavePath)
+					result.show()
 		elif(op == 2):
 			imageAux = ImageP(self.inputImageName("Enter second image file name in " + self.samplesFolder + " folder: "))
 			imageAuxPath = self.samplesFolder + "/" + imageAux.getImageFullName()
@@ -199,7 +205,7 @@ class Menu:
 		return op
 
 	def filterImgOps(self) :
-		ops = ["Gauss", "Laplace", "Emboss", "Relief", "Sobel", "Prewitt", "Roberts", "Scharr"]
+		ops = ["Gauss", "Laplace", "Emboss", "Relief", "Sobel", "Prewitt", "Scharr", "Roberts"]
 
 		print("Filter image operations:")
 		for i in range(len(ops)):
