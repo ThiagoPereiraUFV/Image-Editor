@@ -8,7 +8,7 @@ class Filters :
 		print("Processing image...")
 
 		self.Lmax = 255
-		self.img = self.openImage(img1)
+		self.img = self.openImage(img)
 		self.imgArr = np.asarray(self.img, dtype=float)
 		self.imgResultArr = np.zeros(img.shape, dtype=float)
 
@@ -22,16 +22,16 @@ class Filters :
 
 	def getKernelGauss(self, kSize, sigma):
 		if kSize % 2 == 0:
-      raise Exception('\n\n\nKernel size must be odd\n\n\n')
+			raise Exception('\n\n\nKernel size must be odd\n\n\n')
 
-    x = np.arange(-(kSize-1)/2, (kSize-1)/2+1)
-    y = np.arange(-(kSize-1)/2, (kSize-1)/2+1)
+		x = np.arange(-(kSize-1)/2, (kSize-1)/2+1)
+		y = np.arange(-(kSize-1)/2, (kSize-1)/2+1)
 
-    h1, h2 = np.meshgrid(x,y)
+		h1, h2 = np.meshgrid(x,y)
 
-    hg = np.exp(-(h1**2 + h2**2) / (2*sigma**2))
+		hg = np.exp(-(h1**2 + h2**2) / (2*sigma**2))
 
-    return hg / np.sum(hg)
+		return hg / np.sum(hg)
 
 	def getKernel(self, kernel, kSize=9, sigma=1):
 		kernels = {

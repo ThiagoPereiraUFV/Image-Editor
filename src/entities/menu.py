@@ -91,6 +91,8 @@ class Menu:
 				imageSavePath = self.getResultImagePath("mirror")
 				result.save(imageSavePath)
 				result.show()
+			elif(op == 4) :
+				op = self.filterImgOps()
 		elif(op == 2):
 			imageAux = ImageP(self.inputImageName("Enter second image file name in " + self.samplesFolder + " folder: "))
 			imageAuxPath = self.samplesFolder + "/" + imageAux.getImageFullName()
@@ -132,13 +134,16 @@ class Menu:
 			exit(0)
 
 	def imageOps(self) :
+		ops = ["One image operations", "Two images operations"]
+
 		print("Image operations:")
-		print("1 - One image operations")
-		print("2 - Two images operations")
+		for i in range(len(ops)):
+			print("%d - %s" % (i+1, ops[i]))
+
 		print("0 - Exit")
 		op = int(input("Type the corresponding operation number: "))
 
-		while(op < 0 or op > 2) :
+		while(op < 0 or op > len(ops)) :
 			op = int(input("Invalid operation, type again: "))
 
 		os.system("clear")
@@ -146,13 +151,15 @@ class Menu:
 		return op
 
 	def oneImgOps(self) :
+		ops = ["Constant operations", "Rotation", "Mirroring", "Filters"]
+
 		print("One image operations:")
-		print("1 - Constant operations")
-		print("2 - Rotation")
-		print("3 - Mirroring")
+		for i in range(len(ops)):
+			print("%d - %s" % (i+1, ops[i]))
+
 		op = int(input("Type the corresponding operation number: "))
 
-		while(op < 1 or op > 3) :
+		while(op < 1 or op > len(ops)) :
 			op = int(input("Invalid operation, type again: "))
 
 		os.system("clear")
@@ -160,15 +167,15 @@ class Menu:
 		return op
 
 	def twoImgOps(self) :
+		ops = ["Sum", "Subtraction", "Multiplication", "Division", "3D Anaglyph"]
+
 		print("Two image operations:")
-		print("1 - Sum")
-		print("2 - Subtraction")
-		print("3 - Multiplication")
-		print("4 - Division")
-		print("5 - 3D Anaglyph")
+		for i in range(len(ops)):
+			print("%d - %s" % (i+1, ops[i]))
+
 		op = int(input("Type the corresponding operation number: "))
 
-		while(op < 1 or op > 5) :
+		while(op < 1 or op > len(ops)) :
 			op = int(input("Invalid operation, type again: "))
 
 		os.system("clear")
@@ -176,14 +183,31 @@ class Menu:
 		return op
 
 	def constImgOps(self) :
+		ops = ["Brigthness", "Contrast", "Negative", "Shades of gray"]
+
 		print("Constant image operations:")
-		print("1 - Brigthness")
-		print("2 - Contrast")
-		print("3 - Negative")
-		print("4 - Shades of gray")
+		for i in range(len(ops)):
+			print("%d - %s" % (i+1, ops[i]))
+
 		op = int(input("Type the corresponding operation number: "))
 
-		while(op < 1 or op > 4) :
+		while(op < 1 or op > len(ops)) :
+			op = int(input("Invalid operation, type again: "))
+
+		os.system("clear")
+
+		return op
+
+	def filterImgOps(self) :
+		ops = ["Gauss", "Laplace", "Emboss", "Relief", "Sobel", "Prewitt", "Roberts", "Scharr"]
+
+		print("Filter image operations:")
+		for i in range(len(ops)):
+			print("%d - %s filter" % (i+1, ops[i]))
+
+		op = int(input("Type the corresponding operation number: "))
+
+		while(op < 1 or op > len(ops)) :
 			op = int(input("Invalid operation, type again: "))
 
 		os.system("clear")
