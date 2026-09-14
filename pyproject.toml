@@ -1,0 +1,43 @@
+[project]
+name = "image-editor"
+version = "1.0.0"
+description = "Interactive terminal image editor (point operations, mirroring, rotation, two-image blending and 3x3 convolution filters)"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.14"
+dependencies = [
+    "pillow==12.3.0",
+    "numpy==2.5.3",
+]
+
+[project.scripts]
+image-editor = "image_editor.app:main"
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "ruff==0.16.7",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.1,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=image_editor --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["image_editor"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_also = ['if __name__ == "__main__":']
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
